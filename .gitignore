@@ -1,0 +1,6 @@
+.cmake/
+.vs/
+cmake-build-debug/
+.idea/
+fstream_bidir_iterator.cpp
+fstream_bidir_iterator.h
