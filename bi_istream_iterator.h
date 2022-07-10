@@ -4,7 +4,7 @@
 #include <iterator>
 
 template<
-        typename T
+        typename T = char
         , typename CharType = char
         , typename TraitsType = std::char_traits<CharType>
         , typename DistanceType = std::ptrdiff_t
@@ -43,15 +43,7 @@ public:
             M_Pos = M_StreamSize;
     }
 
-//    // Start of stream
-//    bi_istream_iterator(istream_type & istreamType)
-//        : M_Stream(std::__addressof(istreamType))
-//    {
-//        M_Stream->seekg(0);
-//    }
-
-    // End of stream
-    constexpr bi_istream_iterator()
+    bi_istream_iterator()
         : M_Stream(nullptr)
         , M_Pos(0)
         , M_StreamSize(0)
@@ -73,18 +65,12 @@ public:
             std::streampos currentStreamPos = M_Stream -> tellg();
             M_Stream -> seekg(M_Pos);
             T value = M_Stream -> peek();
-            std::cout << "get: " << value << '\n';
-            M_Stream ->seekg(currentStreamPos);
+            M_Stream -> seekg(currentStreamPos);
 
             return value;
         }
         else
             return -1;
-    }
-
-    const T* operator->() const
-    {
-        return std::__addressof((operator*()));
     }
 
     bi_istream_iterator & operator++()
@@ -116,26 +102,22 @@ public:
     }
 
 private:
-    bool M_Equal(const bi_istream_iterator& obj) const
+    bool equal(const bi_istream_iterator& obj) const
     {
         return M_Stream == obj.M_Stream
             && M_Pos == obj.M_Pos;
     }
 
-    /// Return true if the iterators refer to the same stream,
-    /// or are both at end-of-stream.
     friend bool
     operator==(const bi_istream_iterator& left, const bi_istream_iterator& right)
     {
-        return left.M_Equal(right);
+        return left.equal(right);
     }
 
-    /// Return true if the iterators refer to different streams,
-    /// or if one is at end-of-stream and the other is not.
     friend bool
     operator!=(const bi_istream_iterator& left, const bi_istream_iterator& right)
     {
-        return !left.M_Equal(right);
+        return !left.equal(right);
     }
 };
 
